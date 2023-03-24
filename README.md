@@ -38,12 +38,6 @@ Some instructions ...
 ## Task 3 (Essential for Seniors & Stretch Goal for others)
 
 
-**Designers comments:**
-
-> The 'drawer' UI is still being worked on, sorry! Please don't spend any time on the look and feel.
->
-> The features are good to go though. We should show/hide the insight description with an 'on/off track' tag, the title and relevant description along with the additional information.
-
 # What to focus on
 
 - Your critical thinking and testing approach

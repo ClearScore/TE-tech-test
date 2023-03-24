@@ -29,15 +29,11 @@ This repository is a smaller clone of our main repository at ClearScore. You'll 
 Some instructions ...
 
 
-## Task 1 
+## Task 1 (Junior)
 
-Feel free to use the [mock-report.json](/mock-report.json) directly
 
-## Task 2
+## Task 2 (Mid)
 
-Please implement fetching the [report](/mock-report.json) via http call from the following API
-
-- [https://api.jsonbin.io/v3/b/6107fbe9f14b8b153e05e714?meta=false](https://api.jsonbin.io/v3/b/6107fbe9f14b8b153e05e714?meta=false)
 
 ## Task 3 (Essential for Seniors & Stretch Goal for others)
 

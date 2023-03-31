@@ -1,10 +1,13 @@
-import { PassThrough } from "node:stream";
-import type { EntryContext } from "@remix-run/node";
-import { Response } from "@remix-run/node";
+import { renderToString } from "react-dom/server";
 import { RemixServer } from "@remix-run/react";
-import { renderToPipeableStream } from "react-dom/server";
+import type { EntryContext } from "@remix-run/node";
 
-const ABORT_DELAY = 5_000;
+import { cache } from "@emotion/css";
+import {
+  constructStyleTagsFromChunks,
+  extractCriticalToChunks,
+} from "@emotion/server";
+import { CacheProvider } from "@emotion/react";
 
 export default function handleRequest(
   request: Request,
@@ -12,52 +15,23 @@ export default function handleRequest(
   responseHeaders: Headers,
   remixContext: EntryContext
 ) {
-  return handleBrowserRequest(
-    request,
-    responseStatusCode,
-    responseHeaders,
-    remixContext
-  );
-}
-
-function handleBrowserRequest(
-  request: Request,
-  responseStatusCode: number,
-  responseHeaders: Headers,
-  remixContext: EntryContext
-) {
-  return new Promise((resolve, reject) => {
-    const { pipe, abort } = renderToPipeableStream(
+  const tree = renderToString(
+    <CacheProvider value={cache}>
       <RemixServer
-        context={remixContext}
         url={request.url}
-        abortDelay={ABORT_DELAY}
-      />,
-      {
-        onShellReady() {
-          const body = new PassThrough();
+        context={remixContext}
+        abortDelay={5_000}
+      />
+    </CacheProvider>
+  );
 
-          responseHeaders.set("Content-Type", "text/html");
+  const chunks = extractCriticalToChunks(tree);
+  const style = constructStyleTagsFromChunks(chunks);
+  const body = tree.replace("__STYLES__", style);
+  responseHeaders.set("Content-Type", "text/html");
 
-          resolve(
-            new Response(body, {
-              headers: responseHeaders,
-              status: responseStatusCode,
-            })
-          );
-
-          pipe(body);
-        },
-        onShellError(error: unknown) {
-          reject(error);
-        },
-        onError(error: unknown) {
-          console.error(error);
-          responseStatusCode = 500;
-        },
-      }
-    );
-
-    setTimeout(abort, ABORT_DELAY);
+  return new Response(`<!DOCTYPE html>${body}`, {
+    status: responseStatusCode,
+    headers: responseHeaders,
   });
 }

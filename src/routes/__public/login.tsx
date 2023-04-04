@@ -1,58 +1,37 @@
-import { Form, useActionData } from "@remix-run/react";
+import Login from "@app/screens/login";
 import { createUserSession } from "@app/utils/auth";
 import type { ActionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
+  const remember = Boolean(formData.get("remember"));
 
   if (!email || !password) {
-    return new Response("Unspecified email and/or password", {
-      status: 401,
+    return json({
+      success: false,
+      error: "Please supply your email and password.",
     });
   }
 
   const [firstName, domain] = email.split("@");
 
   if (password !== "password" || domain !== "clearscore.com") {
-    return new Response("Invalid email and/or password", {
-      status: 401,
+    return json({
+      success: false,
+      error: "The email or password you've entered is incorrect.",
     });
   }
 
   return createUserSession({
     request,
     user: { firstName },
+    options: {
+      persist: remember,
+    },
   });
 }
 
-export default function Login(): JSX.Element {
-  const data = useActionData();
-
-  return (
-    <section>
-      <h1>Welcome to ClearScore</h1>
-
-      {data && <section>Error: {data}</section>}
-
-      <Form method="post">
-        <div>
-          <label>Email</label>
-          <input type="email" name="email" autoComplete="email" />
-        </div>
-
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            autoComplete="current-password"
-          />
-        </div>
-
-        <button type="submit">Login</button>
-      </Form>
-    </section>
-  );
-}
+export default Login;

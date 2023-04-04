@@ -5,6 +5,9 @@ export type User = {
 export type CreateUserSessionArgs = {
   request: Request;
   user: User;
+  options: {
+    persist: boolean;
+  };
 };
 
 export type DestroyUserSessionArgs = {

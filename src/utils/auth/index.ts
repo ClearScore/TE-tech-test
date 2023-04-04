@@ -21,6 +21,7 @@ const sessionStorage = createCookieSessionStorage({
 
 const config = {
   sessionKey: "clearscore-user",
+  daysPersist: 30,
 };
 
 async function getSession(request: Request) {
@@ -38,6 +39,7 @@ export async function getUserFromSession(
 export async function createUserSession({
   request,
   user,
+  options,
 }: CreateUserSessionArgs) {
   const session = await getSession(request);
   session.set(config.sessionKey, user);
@@ -45,7 +47,7 @@ export async function createUserSession({
   return redirect("/", {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
-        maxAge: 60 * 60 * 24 * 7,
+        maxAge: options.persist ? 60 * 60 * 24 * config.daysPersist : undefined,
       }),
     },
   });

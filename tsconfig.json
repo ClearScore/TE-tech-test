@@ -16,7 +16,8 @@
     "paths": {
       "@app/routes/*": ["routes/*"],
       "@app/utils/*": ["utils/*"],
-      "@app/components/*": ["components/*"]
+      "@app/components/*": ["components/*"],
+      "@app/screens/*": ["screens/*"]
     }
   }
 }

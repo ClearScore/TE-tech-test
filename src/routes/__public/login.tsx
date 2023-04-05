@@ -1,5 +1,6 @@
 import Login from "@app/screens/login";
 import { createUserSession } from "@app/utils/auth";
+import { getStaticScoreByName } from "@app/utils/score";
 import type { ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
@@ -27,7 +28,7 @@ export async function action({ request }: ActionArgs) {
 
   return createUserSession({
     request,
-    user: { firstName },
+    user: { firstName, score: getStaticScoreByName(firstName) },
     options: {
       persist: remember,
     },

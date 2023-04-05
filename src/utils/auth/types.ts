@@ -1,5 +1,6 @@
 export type User = {
   firstName: string;
+  score: number;
 };
 
 export type CreateUserSessionArgs = {

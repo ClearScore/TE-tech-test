@@ -1,13 +1,9 @@
-import { useLoaderData } from "@remix-run/react";
 import type { LoaderArgs, TypedResponse } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import type { User } from "@app/utils/auth";
 import { getUserFromSession } from "@app/utils/auth";
-import * as changeCase from "change-case";
-
-type Props = {
-  user: User;
-};
+import Dashboard from "@app/screens/dashboard";
+import type { Props } from "@app/screens/dashboard/types";
 
 export async function loader({
   request,
@@ -16,13 +12,4 @@ export async function loader({
   return json({ user });
 }
 
-export default function Index(): JSX.Element {
-  const { user } = useLoaderData<Props>();
-
-  return (
-    <section>
-      <h1>Welcome, {changeCase.capitalCase(user.firstName)}</h1>
-      Your score is 560 out of 1,000.
-    </section>
-  );
-}
+export default Dashboard;
